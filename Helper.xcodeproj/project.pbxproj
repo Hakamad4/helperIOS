@@ -14,6 +14,9 @@
 		A55E020A1E8C7E2800BCAE03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A55E02091E8C7E2800BCAE03 /* Assets.xcassets */; };
 		A55E020D1E8C7E2800BCAE03 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A55E020B1E8C7E2800BCAE03 /* LaunchScreen.storyboard */; };
 		A55E02151E8C7ED000BCAE03 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A55E02141E8C7ED000BCAE03 /* GoogleService-Info.plist */; };
+		A55E02191E8D3CC600BCAE03 /* Pessoa.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55E02181E8D3CC600BCAE03 /* Pessoa.swift */; };
+		A55E021B1E8D4B7600BCAE03 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55E021A1E8D4B7600BCAE03 /* CustomCell.swift */; };
+		A55E021E1E8D5A4D00BCAE03 /* TableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55E021D1E8D5A4D00BCAE03 /* TableVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,9 @@
 		A55E020C1E8C7E2800BCAE03 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A55E020E1E8C7E2800BCAE03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A55E02141E8C7ED000BCAE03 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A55E02181E8D3CC600BCAE03 /* Pessoa.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pessoa.swift; sourceTree = "<group>"; };
+		A55E021A1E8D4B7600BCAE03 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		A55E021D1E8D5A4D00BCAE03 /* TableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableVC.swift; sourceTree = "<group>"; };
 		AAD937BE2B93B73907DA48CC /* Pods-Helper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Helper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Helper/Pods-Helper.debug.xcconfig"; sourceTree = "<group>"; };
 		BDD6A78C15CB2AE844CBB7D8 /* Pods-Helper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Helper.release.xcconfig"; path = "Pods/Target Support Files/Pods-Helper/Pods-Helper.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -80,6 +86,7 @@
 		A55E02011E8C7E2700BCAE03 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				A55E021C1E8D59F900BCAE03 /* Controllers */,
 				A55E02021E8C7E2700BCAE03 /* AppDelegate.swift */,
 				A55E02041E8C7E2700BCAE03 /* ViewController.swift */,
 				A55E02061E8C7E2800BCAE03 /* Main.storyboard */,
@@ -87,8 +94,18 @@
 				A55E020B1E8C7E2800BCAE03 /* LaunchScreen.storyboard */,
 				A55E020E1E8C7E2800BCAE03 /* Info.plist */,
 				A55E02141E8C7ED000BCAE03 /* GoogleService-Info.plist */,
+				A55E02181E8D3CC600BCAE03 /* Pessoa.swift */,
+				A55E021A1E8D4B7600BCAE03 /* CustomCell.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		A55E021C1E8D59F900BCAE03 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A55E021D1E8D5A4D00BCAE03 /* TableVC.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,6 +234,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A55E02051E8C7E2700BCAE03 /* ViewController.swift in Sources */,
+				A55E02191E8D3CC600BCAE03 /* Pessoa.swift in Sources */,
+				A55E021B1E8D4B7600BCAE03 /* CustomCell.swift in Sources */,
+				A55E021E1E8D5A4D00BCAE03 /* TableVC.swift in Sources */,
 				A55E02031E8C7E2700BCAE03 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

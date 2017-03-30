@@ -2,15 +2,13 @@
 //  Pessoa.swift
 //  Helper
 //
-//  Created by Edson Hakamada on 29/03/17.
+//  Created by Edson Hakamada on 30/03/17.
 //  Copyright © 2017 Erik Hakamada. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-class Pessoa{
-    var nome:String?
-    var pagamento:String?
-    
-    
+class Pessoa : NSObject{
+    var nome : String?
+    var pagamento : String?
 }

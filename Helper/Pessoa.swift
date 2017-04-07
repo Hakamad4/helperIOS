@@ -9,6 +9,8 @@
 import UIKit
 
 class Pessoa : NSObject{
+    var id : String?
     var nome : String?
     var pagamento : String?
+    var data : String?
 }

@@ -10,34 +10,65 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 
-class TableVC: UIViewController ,UITextFieldDelegate ,UITableViewDataSource{
+class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
     
     var pessoas = [Pessoa]()
+    var filterPessoas = [Pessoa]()
     var ref :FIRDatabaseReference?
     var handle : UInt?
     var grana = 0.0
+    var detailViewController: InfoVC?
+    
+    
+    let searchController = UISearchController(searchResultsController: nil)
     
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var totalPessoas: UILabel!
     @IBOutlet weak var totalGrana: UILabel!
 
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//         self.clearsSelectionOnViewWillAppear = false
-//         self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        if let split = self.splitViewController {
+            let controllers = split.viewControllers
+            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? InfoVC
+        }
+        
         ref = FIRDatabase.database().reference()
         buscar()
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Buscar"
         
-    }
+        definesPresentationContext = true
+        myTableView.tableHeaderView = searchController.searchBar
+        
+        
 
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    func filtrar(text:String ,scope : String = "All"){
+        filterPessoas = pessoas.filter{ pessoa in
+            return (pessoa.nome?.lowercased().contains(text.lowercased()))!
+        }
+        myTableView.reloadData()
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
     // MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            return filterPessoas.count
+        }
         return pessoas.count
     }
     
@@ -46,80 +77,102 @@ class TableVC: UIViewController ,UITextFieldDelegate ,UITableViewDataSource{
             if let dic = snapshot.value as? [String : AnyObject]{
                 let pessoa = Pessoa()
                 
-//                print(dic)
+                //                print(dic)
                 
                 pessoa.setValuesForKeys(dic)
                 self.pessoas.append(pessoa)
+                self.pessoas = self.pessoas.sorted{$0.nome! < $1.nome!}
                 let pago = pessoa.pagamento
                 let din = Double(pago!)!
-                print(pago!)
                 self.grana += din
-                print("Grana = ")
-                print(self.grana)
                 self.totalGrana.text = "R$" + String(self.grana)
+                self.totalPessoas.text = String(self.pessoas.count)
+                
                 DispatchQueue.main.async(execute: {
                     self.myTableView.reloadData()
                 })
-            
+                
             }
         })
-        totalPessoas.text = String(pessoas.count)
+        
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
-        
-        cell.nome?.text = pessoas[indexPath.row].nome
-        let pago = pessoas[indexPath.row].pagamento
+        let p : Pessoa
+        if searchController.isActive && searchController.searchBar.text != "" {
+            p = filterPessoas[indexPath.row]
+        }else{
+            p = pessoas[indexPath.row]
+        }
+        cell.nome?.text = p.nome
+        let pago = p.pagamento
         cell.pag.text = "R$" + pago!
         
         return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
+    
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        let p = pessoas[indexPath.row]
         if editingStyle == .delete {
+            
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+            ref?.child("Pessoa").child(p.id!).removeValue(completionBlock: {(Error,ref)in
+                if Error != nil{
+                    MyAlerts.alertMessage(usermessage:"Erro ao deletar.",view: self)
+                    print(Error.debugDescription)
+                    return
+                }
+                
+                self.pessoas.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                self.grana -= Double(p.pagamento!)!
+                self.totalGrana.text = "R$" + String(self.grana)
+                self.totalPessoas.text = String(self.pessoas.count)
+                
+            }
+                
+        )}
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    
+    func tableView(tableView: UITableView, editActionsForRowIndexPath indexPath:NSIndexPath) -> [AnyObject]?{
+        let shareAction = UITableViewRowAction(style: .normal, title: "Share", handler: {(action: UITableViewRowAction!,indexPath) -> Void in
+            let firstActivityItem = self.pessoas[indexPath.row].nome
+            
+            let activityViewController = UIActivityViewController(activityItems: [firstActivityItem], applicationActivities: nil)
+            
+            self.present(activityViewController, animated: true, completion: nil)
+            
+            
+        })
+        shareAction.backgroundColor = UIColor.darkGray
+        return [shareAction]
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
+    //preparar pra mandar
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "infoPrepare" {
+            let infoPessoa : Pessoa?
+            if let indexPath = self.myTableView.indexPathForSelectedRow{
+            let nextScene = segue.destination as! NavigationController
+                
+                if searchController.isActive && searchController.searchBar.text != "" {
+                    infoPessoa = filterPessoas[indexPath.row]
+                }else {
+                    infoPessoa = pessoas[indexPath.row]
+                }
+                print(infoPessoa?.nome)
+                nextScene.pessoa = infoPessoa
+            }
+        }
     }
-    */
-
+    
+    
+}
+extension TableVC : UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+        filtrar(text: searchController.searchBar.text!)
+    }
 }

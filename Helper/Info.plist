@@ -32,6 +32,10 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Precisamos da camera para ler os Codigos! 😄</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Precisamos do acesso a sua biblioteca para gravar fotos ou videos! 😄</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

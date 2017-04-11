@@ -10,10 +10,16 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 
-class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
+var pes : Pessoa?
+var totalItens = 0
+var totalCash = "R$ 0.00"
+var myIndex = 0
+
+class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource , UITableViewDelegate{
     
-    var pessoas = [Pessoa]()
-    var filterPessoas = [Pessoa]()
+    var pessoas : [Pessoa] = []
+    var filterPessoas : [Pessoa] = []
+    
     var ref :FIRDatabaseReference?
     var handle : UInt?
     var grana = 0.0
@@ -22,11 +28,11 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
     
     let searchController = UISearchController(searchResultsController: nil)
     
+    let refresh = UIRefreshControl()
+    
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var totalPessoas: UILabel!
     @IBOutlet weak var totalGrana: UILabel!
-
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,14 +50,20 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
         
         definesPresentationContext = true
         myTableView.tableHeaderView = searchController.searchBar
-        
-        
+        myTableView.refreshControl = self.refresh
+        self.refresh.addTarget(self, action: #selector(TableVC.didRefreshList), for: .valueChanged)
+        self.navigationController?.navigationBar.tintColor = UIColor.white
 
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    func didRefreshList(){
+        buscar()
+        self.refresh.endRefreshing()
     }
     
     func filtrar(text:String ,scope : String = "All"){
@@ -73,11 +85,13 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
     }
     
     func buscar(){
+        pessoas.removeAll()
+        grana = 0.0
         handle = ref?.child("Pessoa").observe(.childAdded, with: {(snapshot) in
             if let dic = snapshot.value as? [String : AnyObject]{
                 let pessoa = Pessoa()
                 
-                //                print(dic)
+                //print(dic)
                 
                 pessoa.setValuesForKeys(dic)
                 self.pessoas.append(pessoa)
@@ -85,7 +99,7 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
                 let pago = pessoa.pagamento
                 let din = Double(pago!)!
                 self.grana += din
-                self.totalGrana.text = "R$" + String(self.grana)
+                self.totalGrana.text = "R$" + String(format:"%.2f",self.grana)
                 self.totalPessoas.text = String(self.pessoas.count)
                 
                 DispatchQueue.main.async(execute: {
@@ -102,10 +116,11 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
         let p : Pessoa
         if searchController.isActive && searchController.searchBar.text != "" {
-            p = filterPessoas[indexPath.row]
+            p = (filterPessoas[indexPath.row])
         }else{
             p = pessoas[indexPath.row]
         }
+        cell.pessoa = p
         cell.nome?.text = p.nome
         let pago = p.pagamento
         cell.pag.text = "R$" + pago!
@@ -138,7 +153,7 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, editActionsForRowIndexPath indexPath:NSIndexPath) -> [AnyObject]?{
-        let shareAction = UITableViewRowAction(style: .normal, title: "Share", handler: {(action: UITableViewRowAction!,indexPath) -> Void in
+        let shareAction = UITableViewRowAction(style: .normal, title: "Deletar", handler: {(action: UITableViewRowAction!,indexPath) -> Void in
             let firstActivityItem = self.pessoas[indexPath.row].nome
             
             let activityViewController = UIActivityViewController(activityItems: [firstActivityItem], applicationActivities: nil)
@@ -150,26 +165,17 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource{
         shareAction.backgroundColor = UIColor.darkGray
         return [shareAction]
     }
-    
-    //preparar pra mandar
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "infoPrepare" {
-            let infoPessoa : Pessoa?
-            if let indexPath = self.myTableView.indexPathForSelectedRow{
-            let nextScene = segue.destination as! NavigationController
-                
-                if searchController.isActive && searchController.searchBar.text != "" {
-                    infoPessoa = filterPessoas[indexPath.row]
-                }else {
-                    infoPessoa = pessoas[indexPath.row]
-                }
-                print(infoPessoa?.nome)
-                nextScene.pessoa = infoPessoa
-            }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            pes = self.filterPessoas[indexPath.row]
+        }else{
+            pes = self.pessoas[indexPath.row]
         }
+        totalItens = pessoas.count
+        totalCash = totalGrana.text!
+        buscar()
+        tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-    
 }
 extension TableVC : UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {

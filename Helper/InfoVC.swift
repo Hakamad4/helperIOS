@@ -8,23 +8,33 @@
 
 import UIKit
 
-class InfoVC: UINavigationController {
+class InfoVC: UIViewController {
     
     @IBOutlet weak var labelNome: UILabel!
     @IBOutlet weak var labelData: UILabel!
     @IBOutlet weak var labelPago: UILabel!
+    @IBOutlet weak var imageCode: UIImageView!
+    @IBOutlet weak var segControl: UISegmentedControl!
+    
+    //Bottom bar
+    @IBOutlet weak var labelItensTotal: UILabel!
+    @IBOutlet weak var labelCashTotal: UILabel!
+    
 
-    
-    
-    var pessoa : Pessoa?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        if pessoa != nil {
-        labelNome.text = pessoa?.nome
-        labelData.text = pessoa?.data?.replacingOccurrences(of: ".", with: "/")
-        labelPago.text = "R$ \(String(describing: pessoa?.pagamento))!"
-        }
+        
+        labelItensTotal.text = String(totalItens)
+        labelCashTotal.text = totalCash
+        
+        labelNome.text = pes?.nome
+        labelData.text = pes?.data?.replacingOccurrences(of: ".", with: "/")
+        labelPago.text = "R$ " + String((pes?.pagamento)!)
+        
+        imageCode.image = gerarQRCodePorString(string: (pes?.id)!)
+        
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+        
         // Do any additional setup after loading the view.
 
     }
@@ -34,14 +44,56 @@ class InfoVC: UINavigationController {
         // Dispose of any resources that can be recreated.
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func gerarQRCodePorString(string : String) -> UIImage? {
+        let data = string.data(using: String.Encoding.ascii)
+        let filter = CIFilter(name: "CIQRCodeGenerator")
+        
+        filter?.setValue(data, forKey: "inputMessage")
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        
+        let output = filter?.outputImage?.applying(transform)
+        if output != nil {
+            return UIImage(ciImage: output!)
+        }else{
+            //Alerta
+            MyAlerts.alertMessage(usermessage: "Insira algo a ser convertido em codigo QR", view: self)
+        }
+        return nil
     }
-    */
+    func gerarCodBarraPorString(string : String) -> UIImage? {
+        let data = string.data(using: String.Encoding.ascii)
+        let filter = CIFilter(name: "CICode128BarcodeGenerator")
+        
+        filter?.setValue(data, forKey: "inputMessage")
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        
+        let output = filter?.outputImage?.applying(transform)
+        if output != nil {
+            return UIImage(ciImage: output!)
+        }else{
+            //Alerta
+            MyAlerts.alertMessage(usermessage: "Insira algo a ser convertido em codigo de barra", view: self)
+        }
+        return nil
+    }
 
+    
+    
+    @IBAction func changeCode(_ sender: Any) {
+        let xImage = imageCode.frame.origin.x
+        print(xImage)
+        if segControl.selectedSegmentIndex == 0{
+            imageCode.frame = CGRect.init(x: xImage + 25, y: imageCode.frame.origin.y, width: 150, height: 150);
+            imageCode.image = gerarQRCodePorString(string: (pes?.id)!)
+        }
+        
+        if segControl.selectedSegmentIndex == 1{
+            imageCode.frame = CGRect.init(x: xImage - 25, y: imageCode.frame.origin.y, width: 200, height: 150);
+            imageCode.image = gerarCodBarraPorString(string: (pes?.id)!)
+        }
+    }
+    
+    
+    
+    
 }

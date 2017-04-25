@@ -20,7 +20,6 @@ class ViewController: UIViewController, UITextFieldDelegate{
     var ref :FIRDatabaseReference?
     var handle : UInt?
     
-    var pessoas = [Pessoa]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +32,6 @@ class ViewController: UIViewController, UITextFieldDelegate{
         
         fieldPag.delegate = self
         fieldPag.tag = 1
-        fieldPag.returnKeyType = UIReturnKeyType.next
         
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
@@ -47,10 +45,13 @@ class ViewController: UIViewController, UITextFieldDelegate{
     }
     
     @IBAction func saveAction(_ sender: Any) {
+        save()
+    }
+    public func save(){
         var nome = filedNome.text
         let cash = fieldPag.text
         nome = Util.removeSpecialCharsFromString(text: nome!)
-
+        
         if nome == ""{
             MyAlerts.alertMessage(usermessage: "Nome Invalido, tente novamente", view: self)
             return
@@ -70,23 +71,27 @@ class ViewController: UIViewController, UITextFieldDelegate{
                 nome?.characters.removeLast()
             }
             
-            
+            let p = Pessoa()
+            p.nome = nome
+            p.pagamento = pagForm
             //gerando id
-            let key = ref?.child("Pessos").childByAutoId().key
+            p.id = ref?.child("Pessos").childByAutoId().key
             //Formatando Data
             let dateFormat = DateFormatter()
             dateFormat.dateFormat = "dd/MM/YYYY HH:MM"
-            let dataResult = dateFormat.string(from: Date())
-            let cad : [String : AnyObject] = ["id":key as AnyObject, "nome":nome as AnyObject, "pagamento":pagForm as AnyObject, "data":dataResult as AnyObject]
+            //Gerando data de entrada
+            p.data = dateFormat.string(from: Date())
+            //Gerando o codigo
+            p.codigo = " ";
+            //Gerando o pessoa
+            let pess : [String : AnyObject] = ["id":p.id as AnyObject, "nome":p.nome as AnyObject, "pagamento":p.pagamento as AnyObject, "data":p.data as AnyObject, "codigo":p.codigo as AnyObject]
+            //Instancia de pesso
             
-            
-            ref?.child("Pessoa").child(key!).setValue(cad)
+            ref?.child("Pessoa").child((p.id)!).setValue(pess)
             
             filedNome.text = ""
             fieldPag.text = ""
         }
-        //TODO: limpar aqui
-        
     }
     
     //config textField

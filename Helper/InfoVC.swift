@@ -84,12 +84,20 @@ class InfoVC: UIViewController {
         print(xImage)
         if segControl.selectedSegmentIndex == 0{
             imageCode.frame = CGRect.init(x: xImage + 25, y: imageCode.frame.origin.y, width: 150, height: 150);
-            imageCode.image = gerarQRCodePorString(string: (pes?.id)!)
+            if pes?.codigo == " "{
+                imageCode.image = gerarQRCodePorString(string: (pes?.id)!)
+            }else {
+                imageCode.image = gerarQRCodePorString(string: (pes?.codigo)!)
+            }
         }
         
         if segControl.selectedSegmentIndex == 1{
             imageCode.frame = CGRect.init(x: xImage - 25, y: imageCode.frame.origin.y, width: 200, height: 150);
-            imageCode.image = gerarCodBarraPorString(string: (pes?.id)!)
+            if pes?.codigo == " "{
+                imageCode.image = gerarCodBarraPorString(string: (pes?.id)!)
+            }else {
+                imageCode.image = gerarCodBarraPorString(string: (pes?.codigo)!)
+            }
         }
     }
     

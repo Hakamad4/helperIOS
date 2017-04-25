@@ -21,12 +21,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="lion" translatesAutoresizingMaskIntoConstraints="NO" id="y6b-Qs-S5r">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lion" translatesAutoresizingMaskIntoConstraints="NO" id="y6b-Qs-S5r">
                                 <rect key="frame" x="1" y="147" width="318" height="324"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="y6b-Qs-S5r" secondAttribute="bottom" constant="97" id="PVq-gi-Moq"/>
+                            <constraint firstAttribute="trailing" secondItem="y6b-Qs-S5r" secondAttribute="trailing" constant="1" id="a9s-Re-yj4"/>
+                            <constraint firstItem="y6b-Qs-S5r" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="1" id="iqE-J4-4fk"/>
+                            <constraint firstItem="y6b-Qs-S5r" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="127" id="yFL-5p-ysK"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>

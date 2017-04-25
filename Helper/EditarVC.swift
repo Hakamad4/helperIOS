@@ -26,7 +26,6 @@ class EditarVC: UIViewController , UITextFieldDelegate{
         fieldValor.delegate = self
         fieldValor.text = String((pes?.pagamento)!)
         fieldValor.tag = 1
-        fieldValor.returnKeyType = UIReturnKeyType.next
         
         //firebase reference
         ref = FIRDatabase.database().reference()
@@ -65,7 +64,7 @@ class EditarVC: UIViewController , UITextFieldDelegate{
             }
             novaP?.nome = nome
             novaP?.pagamento = String(format: "%.2f",Double((cash?.replacingOccurrences(of: ",", with: "."))!)!)
-            let edt : [String : AnyObject] = ["id":novaP?.id as AnyObject, "nome":novaP!.nome as AnyObject, "pagamento":novaP?.pagamento as AnyObject, "data":novaP?.data as AnyObject]
+            let edt : [String : AnyObject] = ["id":novaP?.id as AnyObject, "nome":novaP!.nome as AnyObject, "pagamento":novaP?.pagamento as AnyObject, "data":novaP?.data as AnyObject, "codigo":novaP?.codigo as AnyObject]
             ref?.child("Pessoa").child((novaP?.id)!).setValue(edt)
         }
     }

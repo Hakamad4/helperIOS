@@ -9,7 +9,6 @@
 import UIKit
 
 class CustomCell: UITableViewCell {
-    var pessoa : Pessoa?
     @IBOutlet weak var nome: UILabel!
     @IBOutlet weak var pag: UILabel!
     

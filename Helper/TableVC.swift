@@ -37,10 +37,10 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource , UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let split = self.splitViewController {
-            let controllers = split.viewControllers
-            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? InfoVC
-        }
+//        if let split = self.splitViewController {
+//            let controllers = split.viewControllers
+//            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? InfoVC
+//        }
         
         ref = FIRDatabase.database().reference()
         buscar()
@@ -105,11 +105,8 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource , UIT
                 DispatchQueue.main.async(execute: {
                     self.myTableView.reloadData()
                 })
-                
             }
         })
-        
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -120,7 +117,6 @@ class TableVC: UIViewController ,UITextFieldDelegate,UITableViewDataSource , UIT
         }else{
             p = pessoas[indexPath.row]
         }
-        cell.pessoa = p
         cell.nome?.text = p.nome
         let pago = p.pagamento
         cell.pag.text = "R$" + pago!
